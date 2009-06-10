@@ -91,6 +91,7 @@ TODO
 
 Refactor.
 Set up tests.
+Look into supporting Expando Models.
 Look into adding access controls.
 Add resource exhaustion handling.
 Look into avoiding the publishing of internal details (row IDs, class names).
