@@ -1,0 +1,116 @@
+
+
+
+OVERVIEW
+--------
+
+
+LightCRUD has a simple goal:
+
+	Provide an easy way to offer database access.
+	Make typical CRUD (Create/Read/Update/Delete) operations available.
+	Offer a simple URL interface.
+
+LightCRUD is NOT secure.
+
+LightCRUD is NOT production quality.
+
+LightCRUD is only an experiment.
+
+LightCRUD assumes access will be via GET or POST, with /crud/ in the path.
+
+One of the four letters should be capitalized.
+
+To create:
+	../Crud/..
+
+To read:
+	../cRud/..
+
+To update:
+	../crUd/..
+
+To delete:
+	../cruD/..
+
+
+
+EXAMPLES
+--------
+
+
+Add a test class to a models.py running under an AppEngine instance.
+Assume example.com is the URL for your server instance.
+
+
+	class Example( lightcrudmodel.LightCRUDModel ):
+	
+		somefield = db.StringProperty( default='readme' )
+
+
+Update the bindings variable in that file.
+This is how a Model is made public, 'PublicName': 'ClassName'.
+
+
+	bindings = {
+		'Example': 'Example',
+
+
+Access the instance with LightCRUD URLs.
+
+
+	http://example.com/Crud/Example
+	http://example.com/cRud/
+
+
+Notice that the class name that you added in the Python code is part of the URL.
+Notice the Create request and Read request returned database rows with default values.
+Notice the 'kind' and 'id' variables that are among the values returned.
+
+
+Use 'kind' and 'id' for accessing specific database rows.
+
+
+	http://example.com/cRud/Example/42
+	http://example.com/crUd/Example/42?somefield=newvalue
+	http://example.com/cRud/Example/42
+	http://example.com/cruD/Example/42
+	http://example.com/cRud/Example/42
+
+
+That's all there is to it.  LightCRUD started off as a small piece of an experiment,
+a project that needed a simple REST/CRUD interface for the database.  It was useful
+enough that forking LightCRUD into a small published project seemed like a good idea.
+Now I can get back to that original project...
+
+
+
+TODO
+----
+
+
+Refactor.
+Set up tests.
+Look into adding access controls.
+Add resource exhaustion handling.
+Look into avoiding the publishing of internal details (row IDs, class names).
+Port to Django, other languages, etc.
+
+
+
+Copyright 2009 Gary Johnson
+
+This file is part of LightCRUD.
+
+LightCRUD is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+LightCRUD is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with LightCRUD.  If not, see <http://www.gnu.org/licenses/>.
