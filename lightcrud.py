@@ -152,7 +152,7 @@ class CrudCreateHandler( CrudHandler ):
 	def post( self ):
 		m = self.create_REST_model_instance()
 		if m:
-			lightcrudmodel.apply_dict( m, self.get_REST_dict() )
+			lightcrudmodel.apply_dict( m, lightcrudmodel.from_format( self.request.body, self.get_format_from_path() ) )
 			m.put()
 			self.response.out.write( lightcrudmodel.to_format( lightcrudmodel.extract_dict( m ), self.get_format_from_path() ) )
 
@@ -190,7 +190,7 @@ class CrudUpdateHandler( CrudHandler ):
 	def post( self ):
 		m = self.get_REST_model_instance()
 		if m and m.is_saved():
-			lightcrudmodel.apply_dict( m, self.get_REST_dict() )
+			lightcrudmodel.apply_dict( m, lightcrudmodel.from_format( self.request.body, self.get_format_from_path() ) )
 			m.put()
 			self.response.out.write( lightcrudmodel.to_format( lightcrudmodel.extract_dict( m ), self.get_format_from_path() ) )
 
