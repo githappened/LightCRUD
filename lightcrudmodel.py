@@ -39,6 +39,20 @@ def make_kind_of_model_by_name( modelname, modulename ):
 	return retval
 
 
+def to_format( d, f ):
+	if f == 'json':
+		return toJSON( d )
+	else:
+		return str( d )
+
+
+def from_format( s, f ):
+	if f == 'json':
+		return fromJSON( s )
+	else:
+		return s
+
+
 def toJSON( d ):
 	return simplejson.dumps( d )
 

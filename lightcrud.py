@@ -62,7 +62,7 @@ class CrudHandler( webapp.RequestHandler ):
 
 	def get_REST_CRUD_index( self ): # FIX: check the list order rules for Python FIX: refactor
 		retval = None
-		p = re.compile( r'[cC][rR][uU][dD]' )
+		p = re.compile( r'[cC][rR][uU][dD]' ) # FIX: magic value
 		for (i, v) in enumerate( self.get_REST_path() ):
 			if p.match( v ):
 				retval = i
@@ -80,6 +80,16 @@ class CrudHandler( webapp.RequestHandler ):
 		return retval
 
 
+	def get_format_from_path( self ):
+		retval = ''
+		path = self.get_REST_path()
+		if len( path ) > 0:
+			pieces = path[-1].split( '.' )
+			if len( pieces ) > 0:
+				retval = pieces[-1].lower()
+		return retval
+
+
 	def get_from_CGI( self, key ):
 		return self.request.get( key )
 
@@ -89,7 +99,7 @@ class CrudHandler( webapp.RequestHandler ):
 
 
 	def get_model_from_CGI( self ):
-		return self.get_from_CGI( 'kind' )
+		return self.get_from_CGI( 'kind' ) # FIX: magic value
 
 
 	def get_id_from_path( self ):
@@ -97,7 +107,7 @@ class CrudHandler( webapp.RequestHandler ):
 
 
 	def get_id_from_CGI( self ):
-		return self.get_from_CGI( 'id' )
+		return self.get_from_CGI( 'id' ) # FIX: magic value
 
 
 	def get_REST_model_T( self ):
@@ -106,7 +116,7 @@ class CrudHandler( webapp.RequestHandler ):
 		if not s:
 			s = self.get_model_from_CGI()
 		if s:
-			retval = lightcrudmodel.make_kind_of_model_by_name( s, 'models' )
+			retval = lightcrudmodel.make_kind_of_model_by_name( s, 'models' ) # FIX: magic value
 		return retval
 
 
@@ -144,19 +154,7 @@ class CrudCreateHandler( CrudHandler ):
 		if m:
 			lightcrudmodel.apply_dict( m, self.get_REST_dict() )
 			m.put()
-			self.response.out.write( str( lightcrudmodel.extract_dict( m ) ) )
-
-
-
-class JSONCrudCreateHandler( CrudCreateHandler ):
-
-
-	def post( self ):
-		m = self.create_REST_model_instance()
-		if m:
-			lightcrudmodel.apply_dict( m, self.get_REST_dict() )
-			m.put()
-			self.response.out.write( lightcrudmodel.toJSON( m ) )
+			self.response.out.write( lightcrudmodel.to_format( lightcrudmodel.extract_dict( m ), self.get_format_from_path() ) )
 
 
 
@@ -169,46 +167,20 @@ class CrudReadHandler( CrudHandler ):
 			if self.get_REST_model_id():
 				m = self.get_REST_model_instance()
 				if m and m.is_saved():
-					self.response.out.write( str( lightcrudmodel.extract_dict( m ) ) )
+					self.response.out.write( lightcrudmodel.to_format( lightcrudmodel.extract_dict( m ), self.get_format_from_path() ) )
 			else:
 				lm = [lightcrudmodel.extract_dict( m ) for m in M.all()]
 				if lm:
-					self.response.out.write( str( lm ) )
+					self.response.out.write( lightcrudmodel.to_format( lightcrudmodel.extract_dict( lm ), self.get_format_from_path() ) )
 		else:
 			llmm = []
 			for modelname in models.bindings.keys():
-				M = lightcrudmodel.make_kind_of_model_by_name( modelname, 'models' )
+				M = lightcrudmodel.make_kind_of_model_by_name( modelname, 'models' ) # FIX: magic value
 				lm = [lightcrudmodel.extract_dict( m ) for m in M.all()]
 				if lm:
 					llmm.append( lm )
 			if llmm:
-				self.response.out.write( str( llmm ) )
-
-
-
-class JSONCrudReadHandler( CrudReadHandler ):
-
-
-	def post( self ):
-		M = self.get_REST_model_T()
-		if M is not None:
-			if self.get_REST_model_id():
-				m = self.get_REST_model_instance()
-				if m and m.is_saved():
-					self.response.out.write( lightcrudmodel.toJSON( m ) )
-			else:
-				lm = [lightcrudmodel.extract_dict( m ) for m in M.all()]
-				if lm:
-					self.response.out.write( lightcrudmodel.toJSON( lm ) )
-		else:
-			llmm = []
-			for modelname in models.bindings.keys():
-				M = lightcrudmodel.make_kind_of_model_by_name( modelname, 'models' )
-				lm = [lightcrudmodel.extract_dict( m ) for m in M.all()]
-				if lm:
-					llmm.append( lm )
-			if llmm:
-				self.response.out.write( lightcrudmodel.toJSON( llmm ) )
+				self.response.out.write( lightcrudmodel.to_format( llmm, self.get_format_from_path() ) )
 
 
 
@@ -220,19 +192,7 @@ class CrudUpdateHandler( CrudHandler ):
 		if m and m.is_saved():
 			lightcrudmodel.apply_dict( m, self.get_REST_dict() )
 			m.put()
-			self.response.out.write( str( lightcrudmodel.extract_dict( m ) ) )
-
-
-
-class JSONCrudUpdateHandler( CrudUpdateHandler ):
-
-
-	def post( self ):
-		m = self.get_REST_model_instance()
-		if m and m.is_saved():
-			lightcrudmodel.apply_dict( m, self.get_REST_dict() )
-			m.put()
-			self.response.out.write( lightcrudmodel.toJSON( m ) )
+			self.response.out.write( lightcrudmodel.to_format( lightcrudmodel.extract_dict( m ), self.get_format_from_path() ) )
 
 
 
@@ -243,27 +203,13 @@ class CrudDeleteHandler( CrudHandler ):
 		m = self.get_REST_model_instance()
 		if m:
 			self.response.out.write( str( lightcrudmodel.extract_dict( m ) ) )
-			m.delete()
-
-
-
-class JSONCrudDeleteHandler( CrudDeleteHandler ):
-
-
-	def post( self ):
-		m = self.get_REST_model_instance()
-		if m:
-			self.response.out.write( lightcrudmodel.toJSON( m ) )
+			self.response.out.write( lightcrudmodel.to_format( lightcrudmodel.extract_dict( m ), self.get_format_from_path() ) )
 			m.delete()
 
 
 
 def main():
 	bindings = [
-		('/JSON/Crud/.*', JSONCrudCreateHandler),
-		('/JSON/cRud/.*', JSONCrudReadHandler),
-		('/JSON/crUd/.*', JSONCrudUpdateHandler),
-		('/JSON/cruD/.*', JSONCrudDeleteHandler),
 		('/Crud/.*', CrudCreateHandler),
 		('/cRud/.*', CrudReadHandler),
 		('/crUd/.*', CrudUpdateHandler),

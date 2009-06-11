@@ -69,7 +69,6 @@ Access the instance with LightCRUD URLs.
 	http://example.com/Crud/Generic
 	http://example.com/Crud/Example
 	http://example.com/cRud/
-	http://example.com/JSON/cRud/
 
 
 Notice the class names are part of the URL.
@@ -78,15 +77,19 @@ Notice the 'kind' and 'id' variables that are among the values returned.
 
 
 Use 'kind' and 'id' for accessing specific database rows.
+Add a .json 'file extension' to change the data format to JSON.
 
 
+	http://example.com/Crud/Example/
+	http://example.com/Crud/Generic/.json
 	http://example.com/cRud/Example/42
+	http://example.com/cRud/Example/42/.json
 	http://example.com/cRud/Generic/56
 	http://example.com/crUd/Example/42?somefield=newvalue
 	http://example.com/cRud/Example/42
 	http://example.com/crUd/Generic/56?afield=green
 	http://example.com/cRud/Generic/56
-	http://example.com/cruD/Example/42
+	http://example.com/cruD/Example/42/.json
 	http://example.com/cRud/Example/42
 
 
@@ -102,10 +105,12 @@ TODO
 
 
 Refactor.
+Use HTTP POST/GET/PUT/DELETE to imply CRUD actions.
 Set up tests.
 Look into supporting Expando Models.
 Look into adding access controls.
 Add resource exhaustion handling.
+Add more supported formats.
 Look into avoiding the publishing of internal details (row IDs, class names).
 Port to Django, other languages, etc.
 
