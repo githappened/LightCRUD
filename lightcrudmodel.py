@@ -40,14 +40,14 @@ def make_kind_of_model_by_name( modelname, modulename ):
 
 
 def to_format( d, f ):
-	if f == 'json':
+	if f == 'json': # FIX: magic value
 		return toJSON( d )
 	else:
 		return str( d )
 
 
 def from_format( s, f ):
-	if f == 'json':
+	if f == 'json': # FIX: magic value
 		return fromJSON( s )
 	else:
 		return s
@@ -64,8 +64,8 @@ def fromJSON( j ):
 def apply_dict( o, d ):
 	if o.properties() and d:
 		p = o.properties()
-		if p and p.has_key( 'properties' ):
-			p = p['properties']
+		if p and p.has_key( 'properties' ): # FIX: magic value
+			p = p['properties'] # FIX: magic values
 		propertynames = [propertyname for propertyname in p if propertyname not in ignorables and propertyname in d]
 		for propertyname in propertynames:
 			T = type( getattr( o, propertyname ) ) # yes, types, there is no escape
@@ -73,12 +73,12 @@ def apply_dict( o, d ):
 
 
 def extract_dict( o ):
-	retval = {'id': o.key().id_or_name(), 'kind': o.kind()}
+	retval = {'id': o.key().id_or_name(), 'kind': o.kind()} # FIX: magic values
 	if o.properties():
-		retval['properties'] = {}
+		retval['properties'] = {} # FIX: magic value
 		propertynames = [propertyname for propertyname in o.properties() if propertyname not in ignorables]
 		for propertyname in propertynames:
-			retval['properties'][propertyname] = getattr( o, propertyname )
+			retval['properties'][propertyname] = getattr( o, propertyname ) # FIX: magic value
 	return retval
 
 
