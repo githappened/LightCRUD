@@ -75,7 +75,7 @@ class CrudHandler( webapp.RequestHandler ):
 		index = self.get_REST_CRUD_index()
 		if index is not None:
 			path = self.get_REST_path()
-			if len( path ) > index + offset:
+			if len( path ) > index + offset and path[index + offset].find( '.' ) == -1: # FIX: need a graceful solution
 				retval = path[index + offset]
 		return retval
 
@@ -171,7 +171,7 @@ class CrudReadHandler( CrudHandler ):
 			else:
 				lm = [lightcrudmodel.extract_dict( m ) for m in M.all()]
 				if lm:
-					self.response.out.write( lightcrudmodel.to_format( lightcrudmodel.extract_dict( lm ), self.get_format_from_path() ) )
+					self.response.out.write( lightcrudmodel.to_format( lm, self.get_format_from_path() ) )
 		else:
 			llmm = []
 			for modelname in models.bindings.keys():
