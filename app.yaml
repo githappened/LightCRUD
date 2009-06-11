@@ -26,8 +26,12 @@ runtime: python
 api_version: 1
 
 handlers:
-- url: /JSON/[cC][rR][uU][dD]/.*
-  script: lightcrud.py
+- url: /svg
+  static_dir: svg
+- url: /css
+  static_dir: css
+- url: /js
+  static_dir: js
 - url: /[cC][rR][uU][dD]/.*
   script: lightcrud.py
 - url: /.*

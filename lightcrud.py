@@ -41,11 +41,11 @@ class CrudHandler( webapp.RequestHandler ):
 
 
 	def get( self ):
-		self.post()
+		self.response.out.write( 'Bummer, your request reached this GET code stub.' )
 
 
 	def post( self ):
-		self.response.out.write( 'Bummer, your request reached this code stub.' )
+		self.response.out.write( 'Bummer, your request reached this POST code stub.' )
 
 
 	def get_REST_path( self ):
@@ -149,6 +149,14 @@ class CrudHandler( webapp.RequestHandler ):
 class CrudCreateHandler( CrudHandler ):
 
 
+	def get( self ):
+		m = self.create_REST_model_instance()
+		if m:
+			lightcrudmodel.apply_dict( m, self.get_REST_dict() )
+			m.put()
+			self.response.out.write( lightcrudmodel.to_format( lightcrudmodel.extract_dict( m ), self.get_format_from_path() ) )
+
+
 	def post( self ):
 		m = self.create_REST_model_instance()
 		if m:
@@ -161,7 +169,7 @@ class CrudCreateHandler( CrudHandler ):
 class CrudReadHandler( CrudHandler ):
 
 
-	def post( self ):
+	def get( self ):
 		M = self.get_REST_model_T()
 		if M is not None:
 			if self.get_REST_model_id():
@@ -187,16 +195,28 @@ class CrudReadHandler( CrudHandler ):
 class CrudUpdateHandler( CrudHandler ):
 
 
+	def get( self ):
+		m = self.get_REST_model_instance()
+		if m and m.is_saved():
+			lightcrudmodel.apply_dict( m, self.get_REST_dict() )
+			m.put()
+			self.response.out.write( lightcrudmodel.to_format( lightcrudmodel.extract_dict( m ), self.get_format_from_path() ) )
+
+
 	def post( self ):
 		m = self.get_REST_model_instance()
 		if m and m.is_saved():
-			lightcrudmodel.apply_dict( m, lightcrudmodel.from_format( self.request.body, self.get_format_from_path() ) )
+			lightcrudmodel.apply_dict( m, self.get_REST_dict() )
 			m.put()
 			self.response.out.write( lightcrudmodel.to_format( lightcrudmodel.extract_dict( m ), self.get_format_from_path() ) )
 
 
 
 class CrudDeleteHandler( CrudHandler ):
+
+
+	def get( self ):
+		self.post()
 
 
 	def post( self ):

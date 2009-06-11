@@ -10,6 +10,7 @@ LightCRUD has a simple goal:
 	Provide an easy way to offer database access.
 	Make typical CRUD (Create/Read/Update/Delete) operations available.
 	Offer a simple URL interface.
+	I wanted to fool around with dynamic SVG, this is temporary plumbing.
 
 LightCRUD is NOT secure.
 
@@ -97,6 +98,37 @@ That's all there is to it.  LightCRUD started off as a small piece of an experim
 a project that needed a simple REST/CRUD interface for the database.  It was useful
 enough that forking LightCRUD into a small published project seemed like a good idea.
 Now I can get back to that original project...
+
+
+
+FUN WITH SVG
+------------
+
+That example is stale!  Try this instead!
+
+Start up the AppEngine instance with -c, to clear the database.
+Poke the server with the following URLs, to create SVG elements with associated JavaScript.
+
+	/Crud/Rect/?x=10&y=10&width=40&height=30&fill=red&onclick=refreshRender()
+	/Crud/Rect/?x=80&y=80&width=40&height=30&fill=green&onclick=saveRender()
+	/Crud/Rect/?x=50&y=40&width=20&height=30&fill=blue&onclick=setAttribute('x',200)
+	/Crud/Rect/?x=20&y=80&width=40&height=30&fill=yellow&onclick=$.post('/Crud/Line',{},null,'json')
+
+Now browse the home page.  You should see four rectangles.
+Click on the blue rectangle, it should move.
+Click on the red rectangle, to refresh the SVG from the server.
+If the blue rectangle moved back, great, refresh works as expected.
+Click on the blue rectangle again, it should move.
+Click on the green rectangle (to save state to the server).
+Click on the Red rectangle, to refresh.
+If the blue rectangle stayed in the new position, great, saving state works as expected.
+Cick on the yellow rectangle.
+Click on the red rectangle.
+If you now see a new line appear, great, creating new items works as expected.
+
+There might be potential in this approach, to build web UI from nothing but
+some RESTful CRUD, with SVG models in the database, and a little JavaScript bootstrapping.
+Flexible web development without many files on the web server. :)
 
 
 

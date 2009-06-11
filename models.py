@@ -26,35 +26,67 @@ from google.appengine.ext import db
 import lightcrudmodel
 
 
+import sys
+
+
 
 # add names here to enable _PUBLIC_ access via CRUD
 bindings = {
-	'Generic': 'Generic',
-	'Simple': 'Simple',
-	'Complex': 'Complex',
+	'Line': 'Line',
+	'Circle': 'Circle',
+	'Rect': 'Rect',
 	}
 
 
 
-class Generic( db.Model ):
-	s = db.StringProperty( default='standalone' )
+def make_kind_of_model_by_name( name ):
+	retval = None
+	if name and name in bindings.keys():
+		retval = getattr( sys.modules[__name__], bindings[name] )
+	return retval
 
 
 
-class Simple( lightcrudmodel.LightCRUDModel ):
+class CatchAll( db.Model ):
 
-	s = db.StringProperty( default='simplicity' )
+	stroke = db.StringProperty( default='black' )
+	stroke_opacity = db.FloatProperty( default=0.42 )
+	stroke_width = db.StringProperty( default='3' )
+	onmousedown = db.StringProperty( default='' ) # FIX: db.TextProperty()?
+	onmousemove = db.StringProperty( default='' ) # FIX: db.TextProperty()?
+	onmouseup = db.StringProperty( default='' ) # FIX: db.TextProperty()?
+	onclick = db.StringProperty( default='' ) # FIX: db.TextProperty()?
 
 
 
-class Complex( lightcrudmodel.LightCRUDModel ):
+class Line( CatchAll ):
 
-	s = db.StringProperty( default='complexity' )
-	b = db.BooleanProperty( default=True )
-	i = db.IntegerProperty( default=42 )
-	f = db.FloatProperty( default=1.618 )
-	l = db.ListProperty( str, default=['foo','bar','baz'] )
-	u = db.LinkProperty( default='http://example.com/' )
-	e = db.EmailProperty( default='example@example.com' )
+	x1 = db.StringProperty( default='1' )
+	y1 = db.StringProperty( default='1' )
+	x2 = db.StringProperty( default='42' )
+	y2 = db.StringProperty( default='42' )
+
+
+
+class Circle( CatchAll ):
+
+	cx = db.StringProperty( default='42' )
+	cy = db.StringProperty( default='42' )
+	r = db.StringProperty( default='42' )
+	fill = db.StringProperty( default='black' )
+	fill_opacity = db.FloatProperty( default=0.42 )
+
+
+
+class Rect( CatchAll ):
+
+	x = db.StringProperty( default='1' )
+	y = db.StringProperty( default='1' )
+	width = db.StringProperty( default='56' )
+	height = db.StringProperty( default='56' )
+	rx = db.StringProperty( default='0' )
+	ry = db.StringProperty( default='0' )
+	fill = db.StringProperty( default='black' )
+	fill_opacity = db.FloatProperty( default=0.1618 )
 
 

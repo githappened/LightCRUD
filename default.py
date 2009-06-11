@@ -30,8 +30,7 @@ class HomePage( webapp.RequestHandler ):
 
 
 	def get( self ):
-		self.response.out.write( 'The lightcrud module is a lightweight, potentially insecure way to publish Models via a CRUD-centric RESTful API. ' )
-		self.response.out.write( 'For example, /Crud/ModelName/ to create, /cRud/ to read, /crUd/ModelName/id to update, and /cruD/ModelName/id to delete. ' )
+		self.response.out.write( template.render( 'template/default.xml', {'title': 'lightsvg', 'titleleaf': 'home'} ) ) # FIX: relative path?
 
 
 
