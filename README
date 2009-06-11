@@ -39,8 +39,14 @@ EXAMPLES
 --------
 
 
-Add a test class to a models.py running under an AppEngine instance.
+Add test classes to a models.py running under an AppEngine instance.
+The base class should extend db.Model, or maybe lightcrudmodel.LightCRUDModel.
 Assume example.com is the URL for your server instance.
+
+
+	class Generic( db.Model ):
+	
+		afield = db.StringProperty( default='decoupled' )
 
 
 	class Example( lightcrudmodel.LightCRUDModel ):
@@ -53,17 +59,20 @@ This is how a Model is made public, 'PublicName': 'ClassName'.
 
 
 	bindings = {
+		'Generic': 'Generic',
 		'Example': 'Example',
 
 
 Access the instance with LightCRUD URLs.
 
 
+	http://example.com/Crud/Generic
 	http://example.com/Crud/Example
 	http://example.com/cRud/
+	http://example.com/JSON/cRud/
 
 
-Notice that the class name that you added in the Python code is part of the URL.
+Notice the class names are part of the URL.
 Notice the Create request and Read request returned database rows with default values.
 Notice the 'kind' and 'id' variables that are among the values returned.
 
@@ -72,8 +81,11 @@ Use 'kind' and 'id' for accessing specific database rows.
 
 
 	http://example.com/cRud/Example/42
+	http://example.com/cRud/Generic/56
 	http://example.com/crUd/Example/42?somefield=newvalue
 	http://example.com/cRud/Example/42
+	http://example.com/crUd/Generic/56?afield=green
+	http://example.com/cRud/Generic/56
 	http://example.com/cruD/Example/42
 	http://example.com/cRud/Example/42
 

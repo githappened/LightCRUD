@@ -26,23 +26,18 @@ from google.appengine.ext import db
 import lightcrudmodel
 
 
-import sys
-
-
 
 # add names here to enable _PUBLIC_ access via CRUD
 bindings = {
+	'Generic': 'Generic',
 	'Simple': 'Simple',
 	'Complex': 'Complex',
 	}
 
 
 
-def make_kind_of_model_by_name( name ):
-	retval = None
-	if name and name in bindings.keys():
-		retval = getattr( sys.modules[__name__], bindings[name] )
-	return retval
+class Generic( db.Model ):
+	s = db.StringProperty( default='standalone' )
 
 
 

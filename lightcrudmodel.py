@@ -26,6 +26,18 @@ from google.appengine.ext import db
 from django.utils import simplejson
 
 
+import sys
+
+
+
+def make_kind_of_model_by_name( modelname, modulename ):
+	retval = None
+	if modulename and sys.modules[modulename]:
+		m = sys.modules[modulename]
+		if m and modelname and modelname in m.bindings.keys():
+			retval = getattr( m, m.bindings[modelname] )
+	return retval
+
 
 def toJSON( d ):
 	return simplejson.dumps( d )
@@ -33,6 +45,27 @@ def toJSON( d ):
 
 def fromJSON( j ):
 	return simplejson.loads( j )
+
+
+def apply_dict( o, d ):
+	if o.properties() and d:
+		p = o.properties()
+		if p and p.has_key( 'properties' ):
+			p = p['properties']
+		propertynames = [propertyname for propertyname in p if propertyname not in ignorables and propertyname in d]
+		for propertyname in propertynames:
+			T = type( getattr( o, propertyname ) ) # yes, types, there is no escape
+			setattr( o, propertyname, (T)(d[propertyname]) ) # trigger the Property.validate() check
+
+
+def extract_dict( o ):
+	retval = {'id': o.key().id_or_name(), 'kind': o.kind()}
+	if o.properties():
+		retval['properties'] = {}
+		propertynames = [propertyname for propertyname in o.properties() if propertyname not in ignorables]
+		for propertyname in propertynames:
+			retval['properties'][propertyname] = getattr( o, propertyname )
+	return retval
 
 
 
@@ -43,24 +76,11 @@ class LightCRUDModel( db.Model ):
 
 
 	def apply_dict( self, d ):
-		if self.properties() and d:
-			p = self.properties()
-			if p and p.has_key( 'properties' ):
-				p = p['properties']
-			propertynames = [propertyname for propertyname in p if propertyname not in ignorables and propertyname in d]
-			for propertyname in propertynames:
-				T = type( getattr( self, propertyname ) ) # yes, types, there is no escape
-				setattr( self, propertyname, (T)(d[propertyname]) ) # trigger the Property.validate() check
+		apply_dict( self, d )
 
 
 	def extract_dict( self ):
-		retval = {'id': self.key().id_or_name(), 'kind': self.kind()}
-		if self.properties():
-			retval['properties'] = {}
-			propertynames = [propertyname for propertyname in self.properties() if propertyname not in ignorables]
-			for propertyname in propertynames:
-				retval['properties'][propertyname] = getattr( self, propertyname )
-		return retval
+		extract_dict( self )
 
 
 	def toJSON( self ):
