@@ -5,6 +5,12 @@ OVERVIEW
 --------
 
 
+
+Has TiddlyWiki built this?
+http://www.tiddlywiki.com/
+
+
+
 LightCRUD has a simple goal:
 
 	Provide an easy way to offer database access.
@@ -136,6 +142,7 @@ TODO
 ----
 
 
+Look into http://www.tiddlywiki.com/
 Refactor.
 Use HTTP POST/GET/PUT/DELETE to imply CRUD actions.
 Set up tests.
